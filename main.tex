@@ -62,8 +62,19 @@ Earlier hematologists were performing microscopic, examination and counting of b
 Our work is to automate the task of cell counting, we will try to find the best solution to count red, white blood cells and platelets. Therefore, we proceed in two steps:
 \begin{itemize}
     \item \textbf{The segmentation:} where we need to segment the image and remove the noise to get a clear mask on which we are going preform the counting. In this phase we are comparing between two convolutional neural networks U-Net and SegNet.
-    \item \textbf{The counting:} in which we will take the output mask (and edge-mask for red blood cells) from the first phase and apply counting algorithms on it. We used 3 algorithms to count the cells: Watershed, Connected Component Labeling, Circle Hough transform.\
+    \item \textbf{The counting:} in which we will take the output mask (and edge-mask for red blood cells) from the first phase and apply counting algorithms on it. We used 3 algorithms to count the cells: Watershed, Connected Component Labeling, Circle Hough transform.\\
 \end{itemize}
+
+Here is an image containing all blood cell types (red, white and platelets) \ref{fig:rbc-wbc-plt}:
+
+\begin{figure}[H]
+\centering
+    \centerline{\includegraphics[width = 3in]{images/rbc-wbc-plt.jpg}}
+    \caption{Red blood cells, white blood cells and platelets}
+    \label{fig:rbc-wbc-plt}
+\end{figure}
+
+This paper is organized as follows: Related work describes the research in the area of blood cells segmentation and counting, Data Description describes the dataset used in the proposed approach, Methodology describes the proposed approach. Finally, the last section describes the results of the proposed approach, conclusion and future work to be done.
 
 \section{Related Work}
 Bhavnani et al. \cite{bhavnani2016segmentation} have developed a method for segmenting and counting RBC (red blood cells), WBC (White blood cells) and platelets which is also called complete blood count (CBC), by using Otsu’s thresholding and morphological operations as a segmentation method, and for counting they are preforming a comparison between two methods: the watershed algorithm and Circular Hough Transform. The CHT method is the best in terms of accuracy with 92.67\% but it has some weaknesses with overlapping cells and morphological abnormalities. In the other side the watershed method which is a little bit adapted with overlapping and touching cells achieved an accuracy of 91.07\%.\
