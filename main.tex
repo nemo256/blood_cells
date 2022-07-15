@@ -65,7 +65,7 @@ Our work is to automate the task of cell counting, we will try to find the best 
     \item \textbf{The counting:} in which we will take the output mask (and edge-mask for red blood cells) from the first phase and apply counting algorithms on it. We used 3 algorithms to count the cells: Watershed, Connected Component Labeling, Circle Hough transform.\
 \end{itemize}
 
-\section{Related works}
+\section{Related Work}
 Bhavnani et al. \cite{bhavnani2016segmentation} have developed a method for segmenting and counting RBC (red blood cells), WBC (White blood cells) and platelets which is also called complete blood count (CBC), by using Otsu’s thresholding and morphological operations as a segmentation method, and for counting they are preforming a comparison between two methods: the watershed algorithm and Circular Hough Transform. The CHT method is the best in terms of accuracy with 92.67\% but it has some weaknesses with overlapping cells and morphological abnormalities. In the other side the watershed method which is a little bit adapted with overlapping and touching cells achieved an accuracy of 91.07\%.\
 
 Guiliang, FENG et al.\cite{guiliang2016microscopic} have a developed an algorithm that segments and counts cell images based on image definition, a Discrete Cosine Transform (DCT) is applied, which is proposed by N. Ahmed and Rao in 1974 \cite{ahmed1974discrete}. Instead of the traditional watershed approach, the DCT method showed better results in comparison.\
