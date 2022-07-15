@@ -1,0 +1,15 @@
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{SegNet}                           & \textbf{Output} & \textbf{Dataset}    & \textbf{Epochs}      & \textbf{Loss} & \textbf{Mean IOU} & \textbf{Dice} & \textbf{Tversky} & \textbf{Accuracy} \\ \hline
+\multirow{2}{*}{\textbf{Red Blood Cells}} & \textbf{Mask}   & \multirow{2}{*}{13} & \multirow{2}{*}{700} & 0.0315        & 0.7660            & 0.8902        & 0.9072           & 0.9586            \\ \cline{2-2} \cline{5-9} 
+                                          & \textbf{Edge}   &                     &                      & 0.0436        & 0.0664            & 0.3618        & 0.3637           & 0.9399            \\ \hline
+\textbf{White Blood Cells}                & \textbf{Mask}   & 106                 & 80                   & 0.0021        & 0.0214            & 0.2512        & 0.2572           & 0.9972            \\ \hline
+\textbf{Platelets}                        & \textbf{Mask}   & 102                 & 80                   & 0.0025        & 0.0001            & 0.0019        & 0.0031           & 0.9989            \\ \hline
+\end{tabular}%
+}
+\caption{Result of SegNet segmentation}
+\label{Result of SegNet segmentation}
+\end{table}

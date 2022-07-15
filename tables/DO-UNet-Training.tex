@@ -1,0 +1,23 @@
+% 
+% \usepackage{multirow}
+
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{|c|l|c|c|c|c|c|c|c|} 
+\hline
+\textbf{RBC\_Model}  & \textbf{Dataset}                                                                                                                                & \textbf{Epochs}                                                                      & \textbf{Output}      & \textbf{Loss}        & \textbf{Mean IOU}    & \textbf{Dice}        & \textbf{Tversky}     & \textbf{Accuracy}     \\ 
+\hline
+\multirow{2}{*}{A}   & \multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}small Dataset\\(mask + edge) * (10 + 3)\end{tabular}}                                                & \multirow{2}{*}{800}                                                                 & Mask                 & 0.3615               & 0.6365               & 0.8304               & 0.8232               & 0.8754                \\ 
+\cline{4-9}
+                     &                                                                                                                                                 &                                                                                      & Edge                 & 0.1816               & 0.0663               & 0.3582               & 0.3475               & 0.9343                \\ 
+\hline
+\multirow{2}{*}{B}   & \multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}\makecell{Phase 1: large dataset mask*108\\Phase 2: small Dataset (mask + edge)*13}\end{tabular}} & \multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Phase 1: 120 \\Phase 2: 400\end{tabular}} & Mask                 & 0.0713               & 0.7751               & 0.9528               & 0.9567               & 0.9716                \\ 
+\cline{4-9}
+                     &                                                                                                                                                 &                                                                                      & Edge                 & 0.1465               & 0.0759               & 0.4127               & 0.4015               & 0.9385                \\ 
+\hline
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{}                                                                                                                            & \multicolumn{1}{l}{}                                                                 & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} 
+\end{tabular}}
+\caption{Normal trained modes compared to transfer learning model}
+\label{table:do-unet-transfer}
+\end{table}
