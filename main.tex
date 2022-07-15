@@ -64,6 +64,67 @@ Our work is to automate the task of cell counting, we will try to find the best 
     \item \textbf{The segmentation:} where we need to segment the image and remove the noise to get a clear mask on which we are going preform the counting. In this phase we are comparing between two convolutional neural networks U-Net and SegNet.
     \item \textbf{The counting:} in which we will take the output mask (and edge-mask for red blood cells) from the first phase and apply counting algorithms on it. We used 3 algorithms to count the cells: Watershed, Connected Component Labeling, Circle Hough transform.\
 \end{itemize}
+
+\section{Related works}
+Bhavnani et al. \cite{bhavnani2016segmentation} have developed a method for segmenting and counting RBC (red blood cells), WBC (White blood cells) and platelets which is also called complete blood count (CBC), by using Otsu’s thresholding and morphological operations as a segmentation method, and for counting they are preforming a comparison between two methods: the watershed algorithm and Circular Hough Transform. The CHT method is the best in terms of accuracy with 92.67\% but it has some weaknesses with overlapping cells and morphological abnormalities. In the other side the watershed method which is a little bit adapted with overlapping and touching cells achieved an accuracy of 91.07\%.\
+
+Guiliang, FENG et al.\cite{guiliang2016microscopic} have a developed an algorithm that segments and counts cell images based on image definition, a Discrete Cosine Transform (DCT) is applied, which is proposed by N. Ahmed and Rao in 1974 \cite{ahmed1974discrete}. Instead of the traditional watershed approach, the DCT method showed better results in comparison.\
+
+However, there is a drawback to this approach, because this algorithm depends on image definition it relies on well focused images, consequently, when the images are out of focus the segmentation and counting is not reliable. But despite that drawback, it achieved a relatively high accuracy of over 90\% which is better that the watershed method.\\
+
+K. Sudha and P. Geetha \cite{SUDHA2020639} have developed a two stage framework which will segment the leukocytes (a type of WBC) with an edge strength-based Grabcut method as a first stage, in the second stage will count the cells using the novel gradient circular hough transform (GCHT) method. the model takes and RGB image convert it to HSV color space to extract the S component where the WBCs are more clear then applies the edge strength-based location detection the results are fed to fine segmentation using Grabcut Algorithm which will output the edge segmentation mask, for the counting the mask will be fed to the proposed GCHT Algorithm. In the experiments phase they used ALL-IDB \cite{labati2011all} and Cellavision \cite{Zheng2018} datasets, after resizing the images to 256x256.\\
+After the experiments the proposed method had reached an average segmentation accuracy of 99.32\% and a counting accuracy of 97.3\%.\\
+The new GCHT method can segment touched cells and even overlapped cells.
+
+Kimbahune et al. \cite{kimbahune2011blood} have developed a method for segmenting and counting red blood cells (RBC) and white blood cells (WBC).
+segmentation is done using Pulse-Coupled Neural Network (PCNN) and square tracing algorithm for contour tracing after de-noising it with PCNN combined with median filter, the counting is performed by scanning the image and using edge detection methods as square tracing algorithm. this method gave good results compared to state of art methods.\\
+%this kimbahune article they didn't give any info about the database or the experimental results 
+
+Carlos X. Hern{\'{a}}ndez et al. \cite{DBLP:journals/corr/abs-1802-10548} have used a convolutional neural network (CNN) using a feature pyramid network (FPN) combined with a VGG style neural network for segmenting and counting of cells in a given microscopy image.\
+The dataset they used is BBBC005 \cite{ljosa2012annotated} from Broad Institute's Bio-image Benchmark Collection, which consists of 9600 images and each image is 696x520 pixels but they were scaled down to 256x192 for the purposes of their experiment.\
+
+Out of the total 9600 images only 600 of the images which have a corresponding mask were used for the FPN training. And 100 of those were used for fast prototyping and a standard of 80-20 train/test split for the final models.\
+On the other hand, the full 9600 images were used for the VGG network.
+This approach achieved a relatively good accuracy of 81.75\% but with some failure cases such as:\
+%the accuracy is calculated manually from the given results in the article
+% 100 - (rmspe = np.sqrt(np.mean(np.square(((y_true - y_pred) / y_true)), axis=0)))
+
+\begin{itemize}
+  \item High cell overlap
+  \item Irregular cell shapes
+  \item bad focal planes.
+\end{itemize}
+
+Tran, Thanh and Minh et al. \cite{tran2019blood} have developed a method for segmenting and counting RBC and WBCs by using the SegNet model initialised with weights from a pre-trained VGG-16 model, for the counting they first apply Distance transform with 4 different distance metrics, then they apply binary dilation. At the End, they apply the connected component labeling algorithm to count the number of separated cells in images mask. for the training they used 42 images from ALL-IDB1 \cite{labati2011all} after they cropped them to decrease the computation time and memory usage and reduce the number of RBC compared to WBC the result images have a resolution of 360*480*3 (RGB), they used 29 images for training and 13 for testing ,the model had a segmentation accuracy of 89\% and counting accuracy of 93.3\% on RBC and accuracy of 100\% on WBC with the testing database which has the cropped images of RBC and WBC.\
+
+On the first database with cropped images they had only few WBC but in this second database they have more WBC , the database 2 contains 108 only WBC images with the same size of database 1 360*480*3, they augmented the training dataset from 76 to 380 and used 32 images for testing, this second model focus only on the WBC which will increase the segmentation accuracy to 98.5\%, and have a counting accuracy of 97.29\%. The counting accuracy have decreased because of the clumped cells which is the weakness of this model.
+
+Yan Kong et al.\cite{Kong:20} have developed a two-stage framework using parallel modified U-Nets together with seed guided water-mesh algorithm for automatic segmentation and yeast cells counting which is used to observe the living conditions and survival of yeast cells under experimental conditions.\
+
+The cell images used in this study were captured by Olympus IX83 (Olympus Life Sciences, Tokyo, Japan) inverted microscope. They manually selected 20 raw DIC (differential interference contrast) images which contained a number of yeast cells and the annotations were done manually by laboratory technicians, they then obtain 40 images, 20 masked annotation images and the other 20 is center annotation images of yeast cells.\
+
+After splitting images into tiles of size 224x224 with a step stride of 65 and 33 pixels for the horizontal and vertical direction, respectively. They got 4360 raw image tiles and the corresponding center annotation and masked annotation images, from that set 3310 tiles were randomly selected as the training data set and rest was a validation set.
+
+The raw test DIC images used in this study were sized approximately 1002x1998 pixels, but they were resized into 1092x2084 pixels so that each DIC image could be split into a grid of 8x16 image blocks. The image blocks were then fed into modified U-Net.
+
+This method achieved a precision of over 99.74\% and an average recall rate of 99.35\%. however, there is a limitation using this approach, which is the detection of small objects.\\
+
+Shahzad, Muhammad et al. \cite{shahzad2020robust} have developed a custom convolutional encoder-decoder framework along with VGG-16 as the pixel-level feature extraction model to address the problem of whole-slide cell segmentation using the semantic segmentation approach. Their proposed framework works as follows: First, all the original images along with manually generated ground truth masks of each blood cell type are passed through the pre-processing stage. In the pre-processing stage, pixel-level labeling, RGB to gray-scale conversion of masked image and pixel fusing, and unity mask generation are performed. After that, VGG16 is loaded into the system, which acts as a pre-trained pixel-level feature extraction model. Finally, the training process is initiated on the proposed model.
+
+They used ALL-IDB1 as their baseline dataset which consists of 108 whole-slide blood cell images, 59 (2592x1944) images were from healthy individuals and 49 (1712x1368) images from acute lymphoblastic leukemia (ALL) patients.
+
+This approach achieved a class-wise accuracy of 97.45\%, 93.34\%, and 85.11\% for RBCs, WBCs, and platelets, respectively, while global and mean accuracy remain 97.18\% and 91.96\%, respectively.\\
+
+Overton, Toyah and Tucker, Allan \cite{10.1007/978-3-030-44584-3_31} have developed a method which segments and counts IDP (Internally Displaced people) and erythrocytes (red blood cells) using DO-U-Net (Dual Output U-Net) which outputs a segmentation mask and an edge mask then they subtract them to get rid of the overlapping and the touching problem, the model trains on extremely small datasets (10 images) and gives a high segmentation accuracy, They selected 10 images of 108 from ALL-IDB dataset for training the model, the model takes images with a resolution of 188x188 and outputs a segmentation mask and edge mask of lower resolution 100x100, the experiments results have given an accuracy of 98.31\% on a 5 randomly selected images from ALL-IDB, for the IDP they had 98.69\% for fixed resolution images and 94.66\% for scale-invariant satellite images.\\
+
+Li, Dongming et al. \cite{li2021robust} have developed a method for segmenting blood cells by combining neural ordinary differential equations (NODEs) with U-Net networks to improve the accuracy of image segmentation. In order to study the effect of ODE-solve on the speed and accuracy of the network, the ODE-block module was added to the nine convolutional layers in the U-Net network. Firstly, blood cell images are pre-processed to enhance the contrast between the regions to be segmented; secondly, the same dataset was used for the training set and testing set to test segmentation results. Then they select the location where the ordinary differential equation block (ODE-block) module is added, select the appropriate error tolerance, and balance the calculation time and the segmentation accuracy, in order to exert the best performance.\
+
+Finally, the error tolerance of the ODE-block is adjusted to increase the network depth, and the training NODEs-UNet network model is used for cell image segmentation. 
+
+The experiment dataset for this model was provided by the Center for Medical Image and Signal Processing (MISP) and the Department of Pathology, Isfahan University of Medical Sciences \cite{sarrafzadeh2014selection}. MISP.rar contains 148 clear blood cell smear images with a size of 775x519 pixels. They picked up appropriate areas for convenient network training, then cropped 100 blood cell images with a size of 256x256 pixels by selecting a suitable area. To ensure the accuracy of the training model, they retained 20 images as the testing set and used the remaining 80 images to increase the dataset to 800 by data augmentation. Besides, they used a ratio of 3 : 1 as the training set and the validation set.
+
+Using this approach to segment blood cell images in the testing set, it can achieve 95.3\% pixel accuracy and 90.61\% mean intersection over union. By comparing the U-Net and ResNet networks, the pixel accuracy of this network model is increased by 0.88\% and 0.46\%, respectively, and the mean intersection over union is increased by 2.18\% and 1.13\%, respectively.
+
 \section{Data Description}
 Dataset ALL-IDB1 is a version of ALL-IDB dataset, it is composed of 108 images (see figure \ref{img1}) collected during September, 2005. It contains about 39000 blood elements, where the lymphocytes have been labeled by expert oncologists \cite{labati2011all}. All images are in JPG format with 24 bit color depth, and a native resolution equal to 2592 × 1944, captured with a PowerShot G5 camera. The images are related to different magnifications of the microscope (ranging from 300 to 500). It can be freely downloaded from \cite{ALL_IDB_L}.
 
@@ -251,66 +312,6 @@ Here are the results:
 The platelets segmentation result we achieved is not the best compared to the do-U-Net model. SegNet extracts the platelets but with some noise which made it very hard to count accurately.
 It achieved a segmentation accuracy of 99.89\% and the highest counting accuracy is 71.56\% which is not very good.\\
 Here are all the counting accuracies for each approach:
-
-\section{Related works}
-Bhavnani et al. \cite{bhavnani2016segmentation} have developed a method for segmenting and counting RBC (red blood cells), WBC (White blood cells) and platelets which is also called complete blood count (CBC), by using Otsu’s thresholding and morphological operations as a segmentation method, and for counting the are preforming a comparison between two methods: the watershed algorithm and Circular Hough Transform. The model takes an RGB image as an input apply some processing steps then uses Otsu's thresholding to extract RBC and WBC separately with different threshold values then apply the two algorithm to compare the results, the model has no image size constraint because it's based only on image processing techniques and needs a small database to select the threshold values for RBC and WBC in this article they used 20 images. In the Experiment phase they used ALLIDB Database which contains 108 images with 1712x1368 and 2592x1944 resolution.The CHT method is the best in terms of accuracy with 92.67\% but it has some weaknesses with overlapping cells and morphological abnormalities. In the other side the watershed method which is a little bit adapted with overlapping and touching cells had an accuracy of 91.07\%.\
-
-Guiliang, FENG et al.\cite{guiliang2016microscopic} have a developed an algorithm that segments and counts cell images based on image definition, a Discrete Cosine Transform (DCT) is applied, which is proposed by N. Ahmed and Rao in 1974 \cite{ahmed1974discrete}. Instead of the traditional watershed approach, the DCT method showed better results in comparison.\
-
-However, there is a drawback to this approach, because this algorithm depends on image definition it relies on well focused images, consequently, when the images are out of focus the segmentation and counting is not reliable. But despite that drawback, it achieved a relatively high accuracy of over 90\% which is better that the watershed method.\\
-
-K. Sudha and P. Geetha \cite{SUDHA2020639} have developed a two stage framework which will segment the leukocytes (a type of WBC) with an edge strength-based Grabcut method as a first stage, in the second stage will count the cells using the novel gradient circular hough transform (GCHT) method. the model takes and RGB image convert it to HSV color space to extract the S component where the WBCs are more clear then applies the edge strength-based location detection the results are fed to fine segmentation using Grabcut Algorithm which will output the edge segmentation mask, for the counting the mask will be fed to the proposed GCHT Algorithm. In the experiments phase they used ALL-IDB \cite{labati2011all} and Cellavision \cite{Zheng2018} datasets, after resizing the images to 256x256.\\
-After the experiments the proposed method had reached an average segmentation accuracy of 99.32\% and a counting accuracy of 97.3\%.\\
-The new GCHT method can segment touched cells and even overlapped cells.
-
-Kimbahune et al. \cite{kimbahune2011blood} have developed a method for segmenting and counting red blood cells (RBC) and white blood cells (WBC).
-segmentation is done using Pulse-Coupled Neural Network (PCNN) and square tracing algorithm for contour tracing after de-noising it with PCNN combined with median filter, the counting is performed by scanning the image and using edge detection methods as square tracing algorithm. this method gave good results compared to state of art methods.\\
-%this kimbahune article they didn't give any info about the database or the experimental results 
-
-Carlos X. Hern{\'{a}}ndez et al. \cite{DBLP:journals/corr/abs-1802-10548} have used a convolutional neural network (CNN) using a feature pyramid network (FPN) combined with a VGG style neural network for segmenting and counting of cells in a given microscopy image.\
-The dataset they used is BBBC005 \cite{ljosa2012annotated} from Broad Institute's Bio-image Benchmark Collection, which consists of 9600 images and each image is 696x520 pixels but they were scaled down to 256x192 for the purposes of their experiment.\
-
-Out of the total 9600 images only 600 of the images which have a corresponding mask were used for the FPN training. And 100 of those were used for fast prototyping and a standard of 80-20 train/test split for the final models.\
-On the other hand, the full 9600 images were used for the VGG network.
-This approach achieved a relatively good accuracy of 81.75\% but with some failure cases such as:\
-%the accuracy is calculated manually from the given results in the article
-% 100 - (rmspe = np.sqrt(np.mean(np.square(((y_true - y_pred) / y_true)), axis=0)))
-
-\begin{itemize}
-  \item High cell overlap
-  \item Irregular cell shapes
-  \item bad focal planes.
-\end{itemize}
-
-Tran, Thanh and Minh et al. \cite{tran2019blood} have developed a method for segmenting and counting RBC and WBCs by using the SegNet model initialised with weights from a pre-trained VGG-16 model, for the counting they first apply Distance transform with 4 different distance metrics, then they apply binary dilation. At the End, they apply the connected component labeling algorithm to count the number of separated cells in images mask. for the training they used 42 images from ALL-IDB1 \cite{labati2011all} after they cropped them to decrease the computation time and memory usage and reduce the number of RBC compared to WBC the result images have a resolution of 360*480*3 (RGB), they used 29 images for training and 13 for testing ,the model had a segmentation accuracy of 89\% and counting accuracy of 93.3\% on RBC and accuracy of 100\% on WBC with the testing database which has the cropped images of RBC and WBC.\
-
-On the first database with cropped images they had only few WBC but in this second database they have more WBC , the database 2 contains 108 only WBC images with the same size of database 1 360*480*3, they augmented the training dataset from 76 to 380 and used 32 images for testing, this second model focus only on the WBC which will increase the segmentation accuracy to 98.5\%, and have a counting accuracy of 97.29\%. The counting accuracy have decreased because of the clumped cells which is the weakness of this model.
-
-Yan Kong et al.\cite{Kong:20} have developed a two-stage framework using parallel modified U-Nets together with seed guided water-mesh algorithm for automatic segmentation and yeast cells counting which is used to observe the living conditions and survival of yeast cells under experimental conditions.\
-
-The cell images used in this study were captured by Olympus IX83 (Olympus Life Sciences, Tokyo, Japan) inverted microscope. They manually selected 20 raw DIC (differential interference contrast) images which contained a number of yeast cells and the annotations were done manually by laboratory technicians, they then obtain 40 images, 20 masked annotation images and the other 20 is center annotation images of yeast cells.\
-
-After splitting images into tiles of size 224x224 with a step stride of 65 and 33 pixels for the horizontal and vertical direction, respectively. They got 4360 raw image tiles and the corresponding center annotation and masked annotation images, from that set 3310 tiles were randomly selected as the training data set and rest was a validation set.
-
-The raw test DIC images used in this study were sized approximately 1002x1998 pixels, but they were resized into 1092x2084 pixels so that each DIC image could be split into a grid of 8x16 image blocks. The image blocks were then fed into modified U-Net.
-
-This method achieved a precision of over 99.74\% and an average recall rate of 99.35\%. however, there is a limitation using this approach, which is the detection of small objects.\\
-
-Shahzad, Muhammad et al. \cite{shahzad2020robust} have developed a custom convolutional encoder-decoder framework along with VGG-16 as the pixel-level feature extraction model to address the problem of whole-slide cell segmentation using the semantic segmentation approach. Their proposed framework works as follows: First, all the original images along with manually generated ground truth masks of each blood cell type are passed through the pre-processing stage. In the pre-processing stage, pixel-level labeling, RGB to gray-scale conversion of masked image and pixel fusing, and unity mask generation are performed. After that, VGG16 is loaded into the system, which acts as a pre-trained pixel-level feature extraction model. Finally, the training process is initiated on the proposed model.
-
-They used ALL-IDB1 as their baseline dataset which consists of 108 whole-slide blood cell images, 59 (2592x1944) images were from healthy individuals and 49 (1712x1368) images from acute lymphoblastic leukemia (ALL) patients.
-
-This approach achieved a class-wise accuracy of 97.45\%, 93.34\%, and 85.11\% for RBCs, WBCs, and platelets, respectively, while global and mean accuracy remain 97.18\% and 91.96\%, respectively.\\
-
-Overton, Toyah and Tucker, Allan \cite{10.1007/978-3-030-44584-3_31} have developed a method which segments and counts IDP (Internally Displaced people) and erythrocytes (red blood cells) using DO-U-Net (Dual Output U-Net) which outputs a segmentation mask and an edge mask then they subtract them to get rid of the overlapping and the touching problem, the model trains on extremely small datasets (10 images) and gives a high segmentation accuracy, They selected 10 images of 108 from ALL-IDB dataset for training the model, the model takes images with a resolution of 188x188 and outputs a segmentation mask and edge mask of lower resolution 100x100, the experiments results have given an accuracy of 98.31\% on a 5 randomly selected images from ALL-IDB, for the IDP they had 98.69\% for fixed resolution images and 94.66\% for scale-invariant satellite images.\\
-
-Li, Dongming et al. \cite{li2021robust} have developed a method for segmenting blood cells by combining neural ordinary differential equations (NODEs) with U-Net networks to improve the accuracy of image segmentation. In order to study the effect of ODE-solve on the speed and accuracy of the network, the ODE-block module was added to the nine convolutional layers in the U-Net network. Firstly, blood cell images are pre-processed to enhance the contrast between the regions to be segmented; secondly, the same dataset was used for the training set and testing set to test segmentation results. Then they select the location where the ordinary differential equation block (ODE-block) module is added, select the appropriate error tolerance, and balance the calculation time and the segmentation accuracy, in order to exert the best performance.\
-
-Finally, the error tolerance of the ODE-block is adjusted to increase the network depth, and the training NODEs-UNet network model is used for cell image segmentation. 
-
-The experiment dataset for this model was provided by the Center for Medical Image and Signal Processing (MISP) and the Department of Pathology, Isfahan University of Medical Sciences \cite{sarrafzadeh2014selection}. MISP.rar contains 148 clear blood cell smear images with a size of 775x519 pixels. They picked up appropriate areas for convenient network training, then cropped 100 blood cell images with a size of 256x256 pixels by selecting a suitable area. To ensure the accuracy of the training model, they retained 20 images as the testing set and used the remaining 80 images to increase the dataset to 800 by data augmentation. Besides, they used a ratio of 3 : 1 as the training set and the validation set.
-
-Using this approach to segment blood cell images in the testing set, it can achieve 95.3\% pixel accuracy and 90.61\% mean intersection over union. By comparing the U-Net and ResNet networks, the pixel accuracy of this network model is increased by 0.88\% and 0.46\%, respectively, and the mean intersection over union is increased by 2.18\% and 1.13\%, respectively.
 
 \section{Conclusion}
 
