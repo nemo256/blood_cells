@@ -10,11 +10,12 @@
 \usepackage{multirow}
 \usepackage{makecell}
 \usepackage{float}
+
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{Blood cells image segmentation and counting using deep transfer learning}
+\title{Blood cells image segmentation and counting using deep transfer learning }
 
 \author{
 \IEEEauthorblockN{1\textsuperscript{st} Gharbi Aghiles}
@@ -50,21 +51,21 @@ Blood cell counting is a tedious task that would benefit greatly from automation
 \end{abstract}
 
 \begin{IEEEkeywords}
-Blood cell segmentation, Blood cell counting, U-net, seg-net, deep learning 
+Blood cell segmentation, Blood cell counting, U-net, SegNet, deep learning 
 \end{IEEEkeywords}
 
 \section{Introduction}
 Blood carries out many vital functions as it circulates through the body. It transports oxygen from the lungs to other body tissues and carries away carbon dioxide. It carries nutrients from the digestive system to the cells of the body, and carries away wastes for excretion by the kidneys. Blood helps our body fight off infectious agents and inactivates toxins, stops bleeding through its clotting ability, and regulates our body temperature. Doctors rely on many blood tests to diagnose and monitor diseases. Some tests measure the components of blood itself; others examine substances found in the blood to identify abnormal functioning of various organs. Hence, we here propose a software system which will assist pathologists to detect blood cell count and help to find out the diseases. This information can be very helpful to a physician who, for example, is trying to identify the cause of a patient's diseases.
 
-Earlier hematologists were performing microscopic, examination and counting of blood cells manually, which was very time-consuming and tedious process. Also, the accuracy of counting mainly depends on their expertise skill and their physical conditions. Also, because of cells complex nature, it still remains a challenging task to segment cells from its background and count them automatically.
+Earlier hematologists were performing microscopic, examination and counting of blood cells manually, which was very time-consuming and tedious process. Also, the accuracy of counting mainly depends on their expertise skill and their physical conditions. Also, because of cells complex nature, it still remains a challenging task to segment cells from their background and count them automatically.
 
-Our work is to automate the task of cell counting, we will try to find the best solution to count red, white blood cells and platelets. Therefore, we procede in two steps:
+Our work is to automate the task of cell counting, we will try to find the best solution to count red, white blood cells and platelets. Therefore, we proceed in two steps:
 \begin{itemize}
     \item \textbf{The segmentation:} where we need to segment the image and remove the noise to get a clear mask on which we are going preform the counting. In this phase we are comparing between two convolutional neural networks U-Net and SegNet.
-    \item \textbf{The counting:} in which we will take the output mask from the first phase and apply counting algorithms on it. We used 3 algorithms to count the cells: Watershed, Connected Component Labeling, Circle Hough transform.\
+    \item \textbf{The counting:} in which we will take the output mask (and edge-mask for red blood cells) from the first phase and apply counting algorithms on it. We used 3 algorithms to count the cells: Watershed, Connected Component Labeling, Circle Hough transform.\
 \end{itemize}
 \section{Data Description}
-Dataset ALL-IDB1 is a version of ALL-IDB dataset, it is composed of 108 images (see figure \ref{img1}) collected during September, 2005. It contains about 39000 blood elements, where the lymphocytes has been labeled by expert oncologists \cite{labati2011all}. All images are in JPG format with 24 bit color depth, and a native resolution equal to 2592 × 1944, captured with a PowerShot G5 camera. The images are related to different magnifications of the microscope (ranging from 300 to 500). It can be freely downloaded from \cite{ALL_IDB_L}.
+Dataset ALL-IDB1 is a version of ALL-IDB dataset, it is composed of 108 images (see figure \ref{img1}) collected during September, 2005. It contains about 39000 blood elements, where the lymphocytes have been labeled by expert oncologists \cite{labati2011all}. All images are in JPG format with 24 bit color depth, and a native resolution equal to 2592 × 1944, captured with a PowerShot G5 camera. The images are related to different magnifications of the microscope (ranging from 300 to 500). It can be freely downloaded from \cite{ALL_IDB_L}.
 
 The ALL-IDB1 can be used for segmentation or classification with image processing methods or artificial intelligence models.
 %segmentation is done using Pulse-Coupled Neural Network (PCNN) and square tracing algorithm for contour tracing after de-noising it with PCNN combined with median filter, the counting is performed by scanning the image and using edge detection methods as square tracing algorithm. this method gave good results compared to state of art methods.\\
@@ -80,15 +81,15 @@ The ALL-IDB1 can be used for segmentation or classification with image processin
 U-Net and SegNet architectures are the most used in cell segmentation tasks (blood cell segmentation in particular).
 
 In the following sections, we will briefly analyze and compare both convolutional neural network (CNN) U-Net and SegNet models with their perspective results.
-And explain all the postprocessing methods we used for the counting of blood cells (red, white and platelets).
+And explain all the post-processing methods we used for the counting of blood cells (red, white and platelets).
 
-\subsection{DO-UNet}
-The network is based on the fully convolutional network and its architecture was modified and extended to work with fewer training images and to yield more precise segmentations. In our case we are using DO-UNet first proposed in \cite{10.1007/978-3-030-44584-3_31} which is a modified U-Net to produce dual outputs, which also known as contour aware network, first demonstrated by the DCAN architecture \cite{chen2016dcan}. Based on a simple FCN, DCAN was trained to use the outer
+\subsection{DO-U-Net}
+The network is based on the fully convolutional network and its architecture was modified and extended to work with fewer training images and to yield more precise segmentations. In our case we are using DO-UNet first proposed in \cite{10.1007/978-3-030-44584-3_31} which is a modified U-Net to produce dual outputs, which is also known as a contour aware network, first demonstrated by the DCAN architecture \cite{chen2016dcan}. Based on a simple FCN, DCAN was trained to use the outer
 contours of the areas of interest to guide the training of the segmentation masks. This led to improved semantic and instance segmentation of the model, which in their case, looked at non-overlapping features in biomedical imaging.
 With the aim of counting closely co-located and overlapping cells, we are predominantly interested in the correct detection of individual objects as
-opposed to the exact precision of the segmentation mask itself. An examination of the hidden convolutional layers of the classical U-Net showed that the penultimate layer of the network extracts information about the edges of the cells, so the idea is to output the cell mask + edge mask then do a substraction to break the overlapping cells.
+opposed to the exact precision of the segmentation mask itself. An examination of the hidden convolutional layers of the classical U-Net showed that the penultimate layer of the network extracts information about the edges of the cells, so the idea is to output the cell mask + edge mask then do a subtraction to break the overlapping cells.
 
-They Started with the classical U-Net then reduced the number of convolutional layers and skip connections in the model. Simultaneously, they minimised the complexity of the model by looking at smaller input regions of the images, thus minimising the memory footprint of the model. They follow the approach of Ronneberger et. al. \cite{10.1007/978-3-030-44584-3_31} by using unpadded convolutions throughout the network, resulting in a model with smaller output edge and mask (100 × 100 px) corresponding to a central region of a larger (188 × 188 px) input image region. DO-U-Net uses two, independently trained, output layers of identical size. Figure \ref{fig:DO-UNET} shows the DO-U-Net architecture.
+They Started with the classical U-Net then reduced the number of convolutional layers and skip connections in the model. Simultaneously, they minimised the complexity of the model by looking at smaller input regions of the images, thus minimising the memory footprint of the model. They follow the approach of Ronneberger et al. \cite{10.1007/978-3-030-44584-3_31} by using unpadded convolutions throughout the network, resulting in a model with smaller output edge and mask (100 × 100 px) corresponding to a central region of a larger (188 × 188 px) input image region. DO-U-Net uses two, independently trained, output layers of identical size. Figure \ref{fig:DO-UNET} shows the DO-U-Net architecture.
 
 \begin{figure}
 \centering
@@ -98,7 +99,7 @@ They Started with the classical U-Net then reduced the number of convolutional l
     \label{fig:DO-UNET}
 \end{figure}
 
-\subsection{Segnet}
+\subsection{SegNet}
 
 The SegNet neural network, developed by Alex Kendall, Vijay Badrinarayanan, and Roberto Cipolla, all from the University of Cambridge, is a convolutional neural network used for semantic pixel wise labeling. This problem is more commonly called semantic segmentation \cite{badrinarayanan2017segnet}.
 
@@ -111,7 +112,7 @@ The appropriate decoder in the decoder network upsamples its input feature map(s
 These feature maps are then convolved with a trainable decoder filter bank to produce dense feature maps. A batch normalization step is then applied to each of these maps. Note that the decoder corresponding to the first encoder (closest to the input image) produces a multi-channel feature map, although its encoder input has 3 channels (RGB).
 This is unlike the other decoders in the network which produces feature maps with the same number of size and channels as their encoder inputs. The high dimensional feature representation at the output of the final decoder is fed to a trainable soft-max classifier. \cite{badrinarayanan2017segnet}
 
-The input shape we used is (128x128x3) and the output shape is (128x128), there is no loss in resolution because segnet uses the option `same' padding on each encoder layer.
+The input shape we used is (128x128x3) and the output shape is (128x128), there is no loss in resolution because SegNet uses the option `same' padding on each encoder layer.
 %We also tested 3 different loss functions (tversky loss, binary crossentropy and Mean Squared Error MSE), out of which the MSE outperformed the others.
 
 \vspace{0.1in}
@@ -125,17 +126,19 @@ The input shape we used is (128x128x3) and the output shape is (128x128), there 
 
 \subsection{Dataset}
 \hspace{\parindent}
-For both models, we decided to work with the updated ALL-IDB1 dataset which has 13 RBC edge-masks and 108 masks, 108 WBC, Platelets Masks For the count information we have 13 RBC images which has the count information, but the WBC and Platelets don't have the count information where we had to use manual count and algorithms to find the count information for these images. for the WBC we used manual count, for the Platelets we used the connected component labeling on the ground truth mask.\
+For both models, we decided to work with the updated ALL-IDB1 dataset which has 13 edge-masks and 108 masks of Red Blood Cells (RBCs), 108 masks of White Blood Cells (WBCs) and Platelets. For the count information we have 13 RBC images which have the count information, but for WBCs and Platelets we had to use manual count and algorithms to find the count information because they didn't provide the count information. For the WBC we used manual count, for the Platelets we used the connected component labeling on the ground truth mask.\
 
-10 images with their perspective masks and edge masks were chosen for red blood cell training and 3 as a test dataset, for white blood cells 73 images with their masks, and 33 as a test dataset.
+10 images with their perspective masks and edge masks were chosen for red blood cell training and 3 as a test dataset, for white blood cells we used 73 images with their masks as a train dataset, and 33 as a test dataset.
 For platelets, we used 71 for training and 31 as a test dataset.
-Only red blood cells have edge masks, because we need to get rid of overlapped cells, white blood cells and platelets dont need the edge masks, using masks only can retrieve all the necessary features, because both white blood cells and platelets rarely overlap.
+Only red blood cells have edge masks, because we need to get rid of overlapped cells, white blood cells and platelets don't need the edge masks, we can retrieve all the necessary features using masks only, because both white blood cells and platelets rarely overlap.
 The images will be sliced to the input size of the according model to match the input shape of the models, we also add a padding when we slice to recover the edges loss in convolution.
-The resulting train dataset will be 3916 image, mask, and edge tiles (a total of 11748 tiles).
+The resulting train dataset will be 3916 image, mask, and edge tiles (a total of 11748 tiles) see table \ref{table:total_tiles}.
 For the test dataset 1072 image, mask, and edge tiles (a total of 3216 tiles) for red blood cells.
 As for white blood cells, 28126 image and mask tiles were used for training (a total of 56252 tiles), and 15892 image and mask tiles were used as a test dataset for white blood cells (a total of 31784 tiles).
-Finally, for platelets we used 27650 image and mask tiles were used for training (a total of 55300), and 14410 image and mask tiles as a test dataset for platelets (a total of 28820).
+Finally, for platelets we used 27650 image and mask tiles were used for training (a total of 55300), and 14410 image and mask tiles as a test dataset for platelets (a total of 28820).\\
+Here is a table which contains the resulting sliced images for red blood cells, white blood cells and platelets:
 
+\input{tables/table5.tex}
 
 \subsection{Dataset augmentation}
 \hspace{\parindent}
@@ -152,7 +155,7 @@ The augmentation we used was custom which involves the following steps:
     \item Randomly augment the colors (luminosity and saturation).
 \end{enumerate}
 
-\begin{figure}
+\begin{figure}[H]
 \centering
   \vspace{-0.1in}
     \centerline{\includegraphics[width = 3in]{images/Diag_RBC_DOUNET_SegNet.png}}
@@ -160,32 +163,32 @@ The augmentation we used was custom which involves the following steps:
     \label{fig:scheme_RBC}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 \centering
     \centerline{\includegraphics[width = 3in]{images/Diag_WBC_PLT_UNET_SegNet.png}}
     \caption{Schema of the segmentation and counting steps of the WBC's and Platelets}
     \label{fig:scheme_WBC_PLT}
 \end{figure}
+
 \section{Results}
-\subsection{DO-UNet Results}
+\subsection{DO-U-Net Results}
 \subsubsection{Red Blood Cells}
 \hspace{\parindent}
-The Red Blood Cells are the most difficult to detect because of the overlapping, where in some samples we can't notice the overlapping by eyes, in this experiment we are testing do-U-Net from \cite{10.1007/978-3-030-44584-3_31}.
-In the do-U-Net we updated the data augmentation phase. and applied Transfer Learning to get better edge mask. we can see in the dataset that we have only 13 images out of 108 from ALL-IDB1 that contains edge-masks and 108 masks, so the problem here is the lack of the edge label. we ended up with the method below as the best fit to our problem:
+They are the most difficult to detect because of their nature of overlapping, where in some samples we can't see the overlapping by the naked eye, in this experiment we are testing the DO-U-Net from \cite{10.1007/978-3-030-44584-3_31}.
+For the DO-U-Net we updated the data augmentation phase, and applied Transfer Learning to get a better edge-mask. we can see in the dataset that we only have 13 images out of 108 from ALL-IDB1 that contains edge-masks and 108 masks. Consequently, there is a lack of the edge-mask labels.
+We ended up with the method below as the best fit to our problem:
 
 \begin{enumerate}
-    \item Train the DO-UNet outputs on the large dataset (108 masks) which will output two identical masks.
-    \item Continue Training the DO-UNet with the small dataset (13 masks, 13 edges), and Freeze the Mask Output.
+    \item Train the DO-U-Net outputs on the large dataset (108 masks) which will output two identical masks.
+    \item Continue Training the DO-U-Net with the small dataset (13 masks, 13 edges), and Freeze the Mask Output.
 \end{enumerate}
 
+The table \ref{table:do-unet-transfer} compares between the normal trained model A on the small dataset which contains 13 masks and edge-masks and the model B which is trained on two phases, first using the large dataset (108 masks without edge-masks) for 60 epochs, and in the second phase we continued training using the small dataset (13 masks + edges) for 400 epochs.
+We can see that this method pushed the edge accuracy higher, which is really important to get rid of the overlapping.
 
-The table \ref{table:do-unet-transfer} compares between the normal trained model A on the small dataset which contains 13 masks and edges and the model be which is trained on two phases, first with the large dataset (108 mask without edge) for 60 epochs, in the second phase we continued training with the small dataset (13 masks + edges) for 400 epochs.
-We can see that this method pushed the edge accuracy which is really important to get rid of the overlapping.
+\input{tables/DO-UNet-Training.tex}
 
-\input{./tables/DO-UNet-Training.tex}
-
-After training the dual-output-U-Net model we did a benchmark on the 13 images to calculate the counting accuracy of the three methods, we ended up with the results below where we can see that the circle hough transform method is the best for RBC counting with 95.36 accuracy, because all the RBCs have a similar shape and size.
-
+After training the DO-U-Net model we did a benchmark on the 13 images to calculate the counting accuracy of the three methods, we ended up with the results below where we can see that the circle hough transform method is the best for RBC counting with 95.36 accuracy, because all the RBCs have a similar shape and size.
 
 \subsubsection{White Blood Cells}
 \hspace{\parindent}
@@ -193,11 +196,8 @@ The White Blood Cells are also difficult to detect because of the non stable sha
 In the U-Net we removed the edge output because we don't have the edge annotation. then trained the model for 15 epochs with the binaryCrossEntropy Loss function on (74 + 34) images. 
 We ended up with a very high accuracy and IOU score as we can see in table \ref{table:unet-wbc-training}.
 
-
-
 After training the model we did a benchmark on the 13 images then on the complete database (108 images) to calculate the counting accuracy of the three methods.\\ 
 The real count of the 108 images is calculated manually because the original database doesn't have the count information. We ended up with the table \ref{table:UNet-WBC} below where we can see that the watershed method is the best for WBC counting with 97.94 accuracy on the 13 images and 95.64 on the complete database, because the white blood cells always slightly overlap each other where it's easy to the watershed to segment them.
-
 
 \subsubsection{platelets}
 \hspace{\parindent}
@@ -206,13 +206,9 @@ In this experiment we are testing single output U-Net from \cite{10.1007/978-3-0
 then trained the model for 50 epochs with the BinaryCrossEntropy Loss function on (74 + 34) images.
 We ended up with a very high accuracy and IOU score as we can see in table \ref{table:PLT_DOUNET_TRAIN}.
 
-
-
 After training the model we did a benchmark on the 13 images to calculate the counting accuracy of the three methods.
 We are comparing to the real count which is calculated by feeding the ground truth platelets masks to the CCL algorithm. because the original database doesn't have the count information.\\
 We ended up with the table \ref{table:PLT_UNET_RESULT} below where we can see that the CCL method is the best for WBC counting with 98.58 accuracy, because of the rare overlapping on each other where it’s easy to the CCL to segment them.
-
-
 
 \subsection{SegNet Results}
 \hspace{\parindent}
@@ -250,14 +246,11 @@ Here are the results:
     This method achieved a counting accuracy of 96.43\%.
 \end{itemize}
 
-
-
 \subsubsection{Platelets}
 \hspace{\parindent}
 The platelets segmentation result we achieved is not the best compared to the do-U-Net model. SegNet extracts the platelets but with some noise which made it very hard to count accurately.
 It achieved a segmentation accuracy of 99.89\% and the highest counting accuracy is 71.56\% which is not very good.\\
 Here are all the counting accuracies for each approach:
-
 
 \section{Related works}
 Bhavnani et al. \cite{bhavnani2016segmentation} have developed a method for segmenting and counting RBC (red blood cells), WBC (White blood cells) and platelets which is also called complete blood count (CBC), by using Otsu’s thresholding and morphological operations as a segmentation method, and for counting the are preforming a comparison between two methods: the watershed algorithm and Circular Hough Transform. The model takes an RGB image as an input apply some processing steps then uses Otsu's thresholding to extract RBC and WBC separately with different threshold values then apply the two algorithm to compare the results, the model has no image size constraint because it's based only on image processing techniques and needs a small database to select the threshold values for RBC and WBC in this article they used 20 images. In the Experiment phase they used ALLIDB Database which contains 108 images with 1712x1368 and 2592x1944 resolution.The CHT method is the best in terms of accuracy with 92.67\% but it has some weaknesses with overlapping cells and morphological abnormalities. In the other side the watershed method which is a little bit adapted with overlapping and touching cells had an accuracy of 91.07\%.\
