@@ -73,31 +73,18 @@ Guiliang, FENG et al.\cite{guiliang2016microscopic} have a developed an algorith
 However, there is a drawback to this approach, because this algorithm depends on image definition it relies on well focused images, consequently, when the images are out of focus the segmentation and counting is not reliable. But despite that drawback, it achieved a relatively high accuracy of over 90\% which is better that the watershed method.\\
 
 K. Sudha and P. Geetha \cite{SUDHA2020639} have developed a two stage framework which will segment the leukocytes (a type of WBC) with an edge strength-based Grabcut method as a first stage, in the second stage will count the cells using the novel gradient circular hough transform (GCHT) method. In the experiments phase they used ALL-IDB \cite{labati2011all} and Cellavision \cite{Zheng2018} datasets, after resizing the images to 256x256.\\
-After the experiments the proposed method had reached an average segmentation accuracy of 99.32\% and a counting accuracy of 97.3\%.\\
-The new GCHT method can segment touched cells and even overlapped cells.
+After the experiments the proposed method had reached an average segmentation accuracy of 99.32\% and a counting accuracy of 97.3\%. The new GCHT method can segment touched cells and even overlapped cells.\\
 
 Kimbahune et al. \cite{kimbahune2011blood} have developed a method for segmenting and counting red blood cells (RBC) and white blood cells (WBC).
 segmentation is done using Pulse-Coupled Neural Network (PCNN) and square tracing algorithm for contour tracing after de-noising it with PCNN combined with median filter, the counting is performed by scanning the image and using edge detection methods as square tracing algorithm. this method gave good results compared to state of art methods.\\
 %this kimbahune article they didn't give any info about the database or the experimental results 
 
 Carlos X. Hern{\'{a}}ndez et al. \cite{DBLP:journals/corr/abs-1802-10548} have used a convolutional neural network (CNN) using a feature pyramid network (FPN) combined with a VGG style neural network for segmenting and counting of cells in a given microscopy image.\
-The dataset they used is BBBC005 \cite{ljosa2012annotated} from Broad Institute's Bio-image Benchmark Collection, which consists of 9600 images and each image is 696x520 pixels but they were scaled down to 256x192 for the purposes of their experiment.\
-
-Out of the total 9600 images only 600 of the images which have a corresponding mask were used for the FPN training. And 100 of those were used for fast prototyping and a standard of 80-20 train/test split for the final models.\
-On the other hand, the full 9600 images were used for the VGG network.
-This approach achieved a relatively good accuracy of 81.75\% but with some failure cases such as:\
+The dataset they used is BBBC005 \cite{ljosa2012annotated} from Broad Institute's Bio-image Benchmark Collection. This approach achieved a relatively good accuracy of 81.75\% but with some failure cases such as: High cell overlap, Irregular cell shapes and bad focal planes.\\
 %the accuracy is calculated manually from the given results in the article
 % 100 - (rmspe = np.sqrt(np.mean(np.square(((y_true - y_pred) / y_true)), axis=0)))
 
-\begin{itemize}
-  \item High cell overlap
-  \item Irregular cell shapes
-  \item bad focal planes.
-\end{itemize}
-
-Tran, Thanh and Minh et al. \cite{tran2019blood} have developed a method for segmenting and counting RBC and WBCs by using the SegNet model initialised with weights from a pre-trained VGG-16 model, for the counting they first apply Distance transform with 4 different distance metrics, then they apply binary dilation. At the End, they apply the connected component labeling algorithm to count the number of separated cells in images mask. for the training they used 42 images from ALL-IDB1 \cite{labati2011all} after they cropped them to decrease the computation time and memory usage and reduce the number of RBC compared to WBC the result images have a resolution of 360*480*3 (RGB), they used 29 images for training and 13 for testing ,the model had a segmentation accuracy of 89\% and counting accuracy of 93.3\% on RBC and accuracy of 100\% on WBC with the testing database which has the cropped images of RBC and WBC.\
-
-On the first database with cropped images they had only few WBC but in this second database they have more WBC , the database 2 contains 108 only WBC images with the same size of database 1 360*480*3, they augmented the training dataset from 76 to 380 and used 32 images for testing, this second model focus only on the WBC which will increase the segmentation accuracy to 98.5\%, and have a counting accuracy of 97.29\%. The counting accuracy have decreased because of the clumped cells which is the weakness of this model.
+Tran, Thanh and Minh et al. \cite{tran2019blood} have developed a method for segmenting and counting RBC and WBCs by using the SegNet model initialised with weights from a pre-trained VGG-16 model, for the counting they first apply Distance transform with 4 different distance metrics, then they apply binary dilation. At the End, they apply the connected component labeling algorithm to count the number of separated cells in images mask. Their model had a segmentation accuracy of 89\% and counting accuracy of 93.3\% on RBC and accuracy of 100\% on WBC with the testing database which has the cropped images of RBC and WBC.\\
 
 Yan Kong et al.\cite{Kong:20} have developed a two-stage framework using parallel modified U-Nets together with seed guided water-mesh algorithm for automatic segmentation and yeast cells counting which is used to observe the living conditions and survival of yeast cells under experimental conditions.\
 
